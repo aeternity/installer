@@ -15,6 +15,12 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
     exit 1
 fi
 
+if [[ ! $RELEASE_VERSION =~ ^[[:digit:]]\.[[:digit:]]\.[[:digit:]]$ ]]; then
+    echo -e "ERROR: wrong version format"
+    echo -e "Release version format is X.Y.Z where X, Y, and Z are non-negative integers"
+    exit 1
+fi
+
 TEMP_RELEASE_FILE=${TEMP_RELEASE_FILE:=/tmp/aeternity.tgz}
 TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
 PACKAGE_PREFIX=aeternity
@@ -89,7 +95,14 @@ install_node() {
     install_prompt
     RELEASE_FILE=$1
     echo -e "\nInstalling release ${RELEASE_VERSION} ...\n"
-    curl -L "${RELEASE_FILE}" > "${TEMP_RELEASE_FILE}"
+
+    curl --fail -L "${RELEASE_FILE}" -o "${TEMP_RELEASE_FILE}"
+    echo $?
+    if [ $? -eq 0 ]; then
+        echo OK
+    else
+        echo FAIL
+    fi
     rm -rf "${TARGET_DIR}"
     mkdir -p "${TARGET_DIR}"
     tar -C "${TARGET_DIR}" -xzf "${TEMP_RELEASE_FILE}"
