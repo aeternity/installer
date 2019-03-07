@@ -4,7 +4,30 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-RELEASE_VERSION=${1-}
+
+RELEASE_VERSION=""
+DO_NOT_PROMPT="n"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -v|--version)
+    RELEASE_VERSION="$2"
+    shift 2
+    ;;
+    --do-not-prompt)
+    DO_NOT_PROMPT="y"
+    shift # past argument
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
     echo -e "ERROR: No release version given\n"
@@ -39,21 +62,24 @@ in_array() {
 }
 
 install_prompt () {
-    echo -e "\nATTENTION: This script will delete the directory ${TARGET_DIR} if it exists. You should back up any contents before continuing.\n"
-    read -p "Continue (y/n)?" inputprerunchoice
-    case "$inputprerunchoice" in
-        y|Y )
-            echo "Continuing..."
-            ;;
-        n|N )
-            echo "Exiting..."
-            exit 0
-            ;;
-        * )
-            echo "Invalid input..."
-            install_prompt
-            ;;
-    esac
+    if [ ! "$DO_NOT_PROMPT" == "y" ]; then
+        echo -e "\nATTENTION: This script will delete the directory ${TARGET_DIR} if it exists. You should back up any contents before continuing.\n"
+        read -p "Continue (y/n)?" inputprerunchoice
+        case "$inputprerunchoice" in
+            y|Y )
+                echo "Continuing..."
+                ;;
+            n|N )
+                echo "Exiting..."
+                exit 0
+                ;;
+            * )
+                echo "Invalid input..."
+                install_prompt
+                ;;
+        esac
+    fi
+
 }
 
 install_deps_ubuntu() {
@@ -95,13 +121,11 @@ install_node() {
     install_prompt
     RELEASE_FILE=$1
     echo -e "\nInstalling release ${RELEASE_VERSION} ...\n"
-
-    curl --fail -L "${RELEASE_FILE}" -o "${TEMP_RELEASE_FILE}"
-    echo $?
-    if [ $? -eq 0 ]; then
-        echo OK
-    else
-        echo FAIL
+    echo ${TEMP_RELEASE_FILE}
+    R=`curl --silent --write-out "%{http_code}\n"  -L "${RELEASE_FILE}" --output "${TEMP_RELEASE_FILE}"`
+    if [ ! $R -eq 200 ]; then
+        echo -e "ERROR: release do not exist"
+        exit 1
     fi
     rm -rf "${TARGET_DIR}"
     mkdir -p "${TARGET_DIR}"
