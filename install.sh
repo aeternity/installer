@@ -20,8 +20,13 @@ TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
 PACKAGE_PREFIX=aeternity
 MACOS_PACKAGE_SUFFIX=macos-x86_64
 BINARY=aeternity
+SHOW_PROMPT=true
 
 declare -a OLD_RELEASE_VERSIONS=("1.0.0" "1.0.1" "1.1.0" "1.2.0");
+
+if [[ "$2" = "auto" ]]; then
+    SHOW_PROMPT=false
+fi
 
 in_array() {
     local haystack=${1}[@]
@@ -88,13 +93,19 @@ install_deps_osx() {
 }
 
 install_node() {
-    install_prompt
     RELEASE_FILE=$1
     echo -e "\nInstalling release ${RELEASE_VERSION} ...\n"
-    curl -L "${RELEASE_FILE}" > "${TEMP_RELEASE_FILE}"
-    rm -rf "${TARGET_DIR}"
-    mkdir -p "${TARGET_DIR}"
-    tar -C "${TARGET_DIR}" -xzf "${TEMP_RELEASE_FILE}"
+
+    if curl -Lf -o "${TEMP_RELEASE_FILE}" "${RELEASE_FILE}"; then
+        if [ "$SHOW_PROMPT" = true ]; then
+            install_prompt
+        fi
+        rm -rf "${TARGET_DIR}"
+        mkdir -p "${TARGET_DIR}"
+        tar -C "${TARGET_DIR}" -xzf "${TEMP_RELEASE_FILE}"
+    else
+        echo -e "ERROR: Release package not found.\n"
+    fi
 
     echo -e "\nCleanup...\n"
     rm "${TEMP_RELEASE_FILE}"

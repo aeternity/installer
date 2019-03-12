@@ -7,3 +7,10 @@ curl -O https://raw.githubusercontent.com/aeternity/installer/master/install.sh 
 ```
 
 See the documentation [here](https://github.com/aeternity/aeternity/master/README.md) detailed instructions for manual installation.
+
+
+# Run install tests
+
+```bash
+make tests
+```
