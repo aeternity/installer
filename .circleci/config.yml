@@ -1,0 +1,54 @@
+version: 2.1
+
+executors:
+  ubuntu_1604:
+    docker:
+      - image: circleci/buildpack-deps:xenial
+  ubuntu_1804:
+    docker:
+      - image: circleci/buildpack-deps:bionic
+  macos_1013:
+    macos:
+      xcode: "10.0.0"
+
+commands:
+  setup_ubuntu:
+    description: "Setup Ubuntu test environment"
+    steps:
+      - run:
+          name: Setup test environment
+          command: |
+            sudo apt-get install lsb-release
+  run_tests:
+    description: "Tests"
+    steps:
+      - run:
+          name: Bats Tests
+          command: |
+            make tests
+
+jobs:
+  test_ubuntu_1604:
+    executor: ubuntu_1604
+    steps:
+      - checkout
+      - setup_ubuntu
+      - run_tests
+  test_ubuntu_1804:
+    executor: ubuntu_1804
+    steps:
+      - checkout
+      - setup_ubuntu
+      - run_tests
+  test_macos_1013:
+    executor: macos_1013
+    steps:
+      - checkout
+      - run_tests
+
+workflows:
+  check:
+    jobs:
+      - test_ubuntu_1604
+      - test_ubuntu_1804
+      - test_macos_1013
