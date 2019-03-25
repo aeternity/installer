@@ -5,3 +5,7 @@ tests: bats
 
 bats:
 	git clone https://github.com/sstephenson/bats.git
+
+.PHONY: clean
+clean:
+	rm -rf bats
