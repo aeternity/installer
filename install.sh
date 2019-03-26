@@ -24,7 +24,7 @@ SHOW_PROMPT=true
 
 declare -a OLD_RELEASE_VERSIONS=("1.0.0" "1.0.1" "1.1.0" "1.2.0");
 
-if [[ "$2" = "auto" ]]; then
+if [[ "${2:-}" = "auto" ]]; then
     SHOW_PROMPT=false
 fi
 
@@ -103,12 +103,13 @@ install_node() {
         rm -rf "${TARGET_DIR}"
         mkdir -p "${TARGET_DIR}"
         tar -C "${TARGET_DIR}" -xzf "${TEMP_RELEASE_FILE}"
+
+        echo -e "\nCleanup...\n"
+        rm "${TEMP_RELEASE_FILE}"
     else
         echo -e "ERROR: Release package not found.\n"
+        exit 1
     fi
-
-    echo -e "\nCleanup...\n"
-    rm "${TEMP_RELEASE_FILE}"
 }
 
 # Backward compatibility package names

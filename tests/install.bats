@@ -9,7 +9,7 @@ load test_helper
 }
 
 @test "fail if release does not exits" {
-    run ./install.sh 1.1.1 auto
+    run ./install.sh 1.1.1
     [[ ${output} =~ "ERROR: Release package not found" ]]
     [[ $status -eq 1 ]]
 }
