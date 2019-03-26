@@ -108,6 +108,7 @@ install_node() {
         rm "${TEMP_RELEASE_FILE}"
     else
         echo -e "ERROR: Release package not found.\n"
+        exit 1
     fi
 }
 
