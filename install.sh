@@ -132,4 +132,5 @@ else
 fi
 
 echo -e "Installation completed."
-echo -e "Run '${TARGET_DIR}/bin/${BINARY} start' to start the node"
+echo -e "Run '${TARGET_DIR}/bin/${BINARY} start' to start the node in the background or"
+echo -e "Run '${TARGET_DIR}/bin/${BINARY} console' to start the node with console output"
