@@ -2,9 +2,9 @@
 
 load test_helper
 
-@test "fail if not release version is provided" {
-    run ./install.sh
-    [[ ${lines[0]} = "ERROR: No release version given" ]]
+@test "--help print usage information" {
+    run ./install.sh --help
+    [ "${lines[0]}" = "Usage:" ]
     [[ $status -eq 1 ]]
 }
 
@@ -26,7 +26,6 @@ load test_helper
 }
 
 @test "install latest version" {
-    skip "Not implemented yet."
     run ./install.sh --no-prompt
     [[ ${output} =~ "Installation completed." ]]
     [[ $status -eq 0 ]]

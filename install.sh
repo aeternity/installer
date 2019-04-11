@@ -4,29 +4,12 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-RELEASE_VERSION=""
+RELEASE_VERSION="latest"
 TEMP_RELEASE_FILE=${TEMP_RELEASE_FILE:=/tmp/aeternity.tgz}
 TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
 SHOW_PROMPT=true
 
-for arg in "$@"; do
-    case $arg in
-        --no-prompt*)
-        SHOW_PROMPT=false
-        shift
-        ;;
-        *)
-            # unknown option
-        ;;
-    esac
-done
-
-if [ $# -gt 0 ]; then
-    RELEASE_VERSION=${@:$#}
-fi
-
-if [[ -z "${RELEASE_VERSION}" ]]; then
-    echo -e "ERROR: No release version given\n"
+usage () {
     echo -e "Usage:\n"
     echo -e "  $0 [options] release_version\n"
     echo "Options:"
@@ -34,6 +17,30 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
     echo "Release version format is X.Y.Z where X, Y, and Z are non-negative integers"
     echo "You can find a list of aeternity releases at https://github.com/aeternity/aeternity/releases"
     exit 1
+}
+
+for arg in "$@"; do
+    case $arg in
+        --no-prompt)
+            SHOW_PROMPT=false
+            shift
+        ;;
+        --help)
+            usage
+        ;;
+        --*)
+            echo -e "ERROR: Unknown option '$arg'\n"
+            usage
+        ;;
+        *)
+        # do nothing, it's interpreted as version below
+        ;;
+    esac
+done
+
+# latest argument is interpreted as version
+if [ $# -gt 0 ]; then
+    RELEASE_VERSION=${@:$#}
 fi
 
 in_array() {
