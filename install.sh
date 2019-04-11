@@ -17,12 +17,7 @@ fi
 
 TEMP_RELEASE_FILE=${TEMP_RELEASE_FILE:=/tmp/aeternity.tgz}
 TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
-PACKAGE_PREFIX=aeternity
-MACOS_PACKAGE_SUFFIX=macos-x86_64
-BINARY=aeternity
 SHOW_PROMPT=true
-
-declare -a OLD_RELEASE_VERSIONS=("1.0.0" "1.0.1" "1.1.0" "1.2.0");
 
 if [[ "${2:-}" = "auto" ]]; then
     SHOW_PROMPT=false
@@ -112,25 +107,17 @@ install_node() {
     fi
 }
 
-# Backward compatibility package names
-# @TODO remove after 2.* release
-if in_array OLD_RELEASE_VERSIONS $RELEASE_VERSION; then
-    PACKAGE_PREFIX=epoch
-    BINARY=epoch
-    MACOS_PACKAGE_SUFFIX=osx-10.13.6
-fi
-
 if [[ "$OSTYPE" = "linux-gnu" && $(lsb_release -i -s) = "Ubuntu" ]]; then
     install_deps_ubuntu
-    install_node "https://github.com/aeternity/aeternity/releases/download/v${RELEASE_VERSION}/${PACKAGE_PREFIX}-${RELEASE_VERSION}-ubuntu-x86_64.tar.gz"
+    install_node "https://github.com/aeternity/aeternity/releases/download/v${RELEASE_VERSION}/aeternity-${RELEASE_VERSION}-ubuntu-x86_64.tar.gz"
 elif [[ "$OSTYPE" = "darwin"* ]]; then
     install_deps_osx
-    install_node "https://github.com/aeternity/aeternity/releases/download/v${RELEASE_VERSION}/${PACKAGE_PREFIX}-${RELEASE_VERSION}-${MACOS_PACKAGE_SUFFIX}.tar.gz"
+    install_node "https://github.com/aeternity/aeternity/releases/download/v${RELEASE_VERSION}/aeternity-${RELEASE_VERSION}-macos-x86_64.tar.gz"
 else
     echo -e "Unsupported platform (OS)! Please refer to the documentation for supported platforms."
     exit 1
 fi
 
 echo -e "Installation completed."
-echo -e "Run '${TARGET_DIR}/bin/${BINARY} start' to start the node in the background or"
-echo -e "Run '${TARGET_DIR}/bin/${BINARY} console' to start the node with console output"
+echo -e "Run '${TARGET_DIR}/bin/aeternity start' to start the node in the background or"
+echo -e "Run '${TARGET_DIR}/bin/aeternity console' to start the node with console output"

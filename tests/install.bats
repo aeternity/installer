@@ -25,17 +25,6 @@ load test_helper
     $NODE_DIR/bin/aeternity stop
 }
 
-@test "install legacy version" {
-    run ./install.sh 1.4.0 auto
-    [[ ${output} =~ "Installation completed." ]]
-    [[ $status -eq 0 ]]
-
-    [[ -f $NODE_DIR/bin/aeternity ]]
-    $NODE_DIR/bin/aeternity start && sleep 5
-    $NODE_DIR/bin/aeternity ping
-    $NODE_DIR/bin/aeternity stop
-}
-
 @test "install latest version" {
     skip "Not implemented yet."
     run ./install.sh auto
