@@ -15,7 +15,7 @@ load test_helper
 }
 
 @test "install specific version" {
-    run ./install.sh 2.0.0 auto
+    run ./install.sh --no-prompt 2.0.0
     [[ ${output} =~ "Installation completed" ]]
     [[ $status -eq 0 ]]
 
@@ -27,7 +27,7 @@ load test_helper
 
 @test "install latest version" {
     skip "Not implemented yet."
-    run ./install.sh auto
+    run ./install.sh --no-prompt
     [[ ${output} =~ "Installation completed." ]]
     [[ $status -eq 0 ]]
 

@@ -4,23 +4,36 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-RELEASE_VERSION=${1-}
-
-if [[ -z "${RELEASE_VERSION}" ]]; then
-    echo -e "ERROR: No release version given\n"
-    echo -e "Usage:\n"
-    echo -e "  $0 release_version\n"
-    echo "Release version format is X.Y.Z where X, Y, and Z are non-negative integers"
-    echo "You can find a list of aeternity releases at https://github.com/aeternity/aeternity/releases"
-    exit 1
-fi
-
+RELEASE_VERSION=""
 TEMP_RELEASE_FILE=${TEMP_RELEASE_FILE:=/tmp/aeternity.tgz}
 TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
 SHOW_PROMPT=true
 
-if [[ "${2:-}" = "auto" ]]; then
-    SHOW_PROMPT=false
+for arg in "$@"; do
+    case $arg in
+        --no-prompt*)
+        SHOW_PROMPT=false
+        shift
+        ;;
+        *)
+            # unknown option
+        ;;
+    esac
+done
+
+if [ $# -gt 0 ]; then
+    RELEASE_VERSION=${@:$#}
+fi
+
+if [[ -z "${RELEASE_VERSION}" ]]; then
+    echo -e "ERROR: No release version given\n"
+    echo -e "Usage:\n"
+    echo -e "  $0 [options] release_version\n"
+    echo "Options:"
+    echo -e "  --no-prompt Disable confirmation prompts.\n"
+    echo "Release version format is X.Y.Z where X, Y, and Z are non-negative integers"
+    echo "You can find a list of aeternity releases at https://github.com/aeternity/aeternity/releases"
+    exit 1
 fi
 
 in_array() {
