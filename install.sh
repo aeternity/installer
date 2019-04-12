@@ -4,28 +4,43 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-RELEASE_VERSION=${1-}
+RELEASE_VERSION="latest"
+TEMP_RELEASE_FILE=${TEMP_RELEASE_FILE:=/tmp/aeternity.tgz}
+TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
+SHOW_PROMPT=true
 
-if [[ -z "${RELEASE_VERSION}" ]]; then
-    echo -e "ERROR: No release version given\n"
+usage () {
     echo -e "Usage:\n"
-    echo -e "  $0 release_version\n"
+    echo -e "  $0 [options] release_version\n"
+    echo "Options:"
+    echo -e "  --no-prompt Disable confirmation prompts.\n"
     echo "Release version format is X.Y.Z where X, Y, and Z are non-negative integers"
     echo "You can find a list of aeternity releases at https://github.com/aeternity/aeternity/releases"
     exit 1
-fi
+}
 
-TEMP_RELEASE_FILE=${TEMP_RELEASE_FILE:=/tmp/aeternity.tgz}
-TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
-PACKAGE_PREFIX=aeternity
-MACOS_PACKAGE_SUFFIX=macos-x86_64
-BINARY=aeternity
-SHOW_PROMPT=true
+for arg in "$@"; do
+    case $arg in
+        --no-prompt)
+            SHOW_PROMPT=false
+            shift
+        ;;
+        --help)
+            usage
+        ;;
+        --*)
+            echo -e "ERROR: Unknown option '$arg'\n"
+            usage
+        ;;
+        *)
+        # do nothing, it's interpreted as version below
+        ;;
+    esac
+done
 
-declare -a OLD_RELEASE_VERSIONS=("1.0.0" "1.0.1" "1.1.0" "1.2.0");
-
-if [[ "${2:-}" = "auto" ]]; then
-    SHOW_PROMPT=false
+# latest argument is interpreted as version
+if [ $# -gt 0 ]; then
+    RELEASE_VERSION=${@:$#}
 fi
 
 in_array() {
@@ -112,25 +127,17 @@ install_node() {
     fi
 }
 
-# Backward compatibility package names
-# @TODO remove after 2.* release
-if in_array OLD_RELEASE_VERSIONS $RELEASE_VERSION; then
-    PACKAGE_PREFIX=epoch
-    BINARY=epoch
-    MACOS_PACKAGE_SUFFIX=osx-10.13.6
-fi
-
 if [[ "$OSTYPE" = "linux-gnu" && $(lsb_release -i -s) = "Ubuntu" ]]; then
     install_deps_ubuntu
-    install_node "https://github.com/aeternity/aeternity/releases/download/v${RELEASE_VERSION}/${PACKAGE_PREFIX}-${RELEASE_VERSION}-ubuntu-x86_64.tar.gz"
+    install_node "https://releases.ops.aeternity.com/aeternity-${RELEASE_VERSION}-ubuntu-x86_64.tar.gz"
 elif [[ "$OSTYPE" = "darwin"* ]]; then
     install_deps_osx
-    install_node "https://github.com/aeternity/aeternity/releases/download/v${RELEASE_VERSION}/${PACKAGE_PREFIX}-${RELEASE_VERSION}-${MACOS_PACKAGE_SUFFIX}.tar.gz"
+    install_node "https://releases.ops.aeternity.com/aeternity-${RELEASE_VERSION}-macos-x86_64.tar.gz"
 else
     echo -e "Unsupported platform (OS)! Please refer to the documentation for supported platforms."
     exit 1
 fi
 
 echo -e "Installation completed."
-echo -e "Run '${TARGET_DIR}/bin/${BINARY} start' to start the node in the background or"
-echo -e "Run '${TARGET_DIR}/bin/${BINARY} console' to start the node with console output"
+echo -e "Run '${TARGET_DIR}/bin/aeternity start' to start the node in the background or"
+echo -e "Run '${TARGET_DIR}/bin/aeternity console' to start the node with console output"

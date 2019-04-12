@@ -2,9 +2,9 @@
 
 load test_helper
 
-@test "fail if not release version is provided" {
-    run ./install.sh
-    [[ ${lines[0]} = "ERROR: No release version given" ]]
+@test "--help print usage information" {
+    run ./install.sh --help
+    [ "${lines[0]}" = "Usage:" ]
     [[ $status -eq 1 ]]
 }
 
@@ -15,7 +15,7 @@ load test_helper
 }
 
 @test "install specific version" {
-    run ./install.sh 2.0.0 auto
+    run ./install.sh --no-prompt 2.0.0
     [[ ${output} =~ "Installation completed" ]]
     [[ $status -eq 0 ]]
 
@@ -25,20 +25,8 @@ load test_helper
     $NODE_DIR/bin/aeternity stop
 }
 
-@test "install legacy version" {
-    run ./install.sh 1.4.0 auto
-    [[ ${output} =~ "Installation completed." ]]
-    [[ $status -eq 0 ]]
-
-    [[ -f $NODE_DIR/bin/aeternity ]]
-    $NODE_DIR/bin/aeternity start && sleep 5
-    $NODE_DIR/bin/aeternity ping
-    $NODE_DIR/bin/aeternity stop
-}
-
 @test "install latest version" {
-    skip "Not implemented yet."
-    run ./install.sh auto
+    run ./install.sh --no-prompt
     [[ ${output} =~ "Installation completed." ]]
     [[ $status -eq 0 ]]
 
