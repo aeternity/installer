@@ -2,12 +2,12 @@
 
 Run below command to install latest version of aeternity node:
 ```bash
-curl -O https://raw.githubusercontent.com/aeternity/installer/master/install.sh && chmod +x install.sh && ./install.sh
+bash <(curl -s https://install.aeternity.io/install.sh)
 ```
 
 To install an older specific version use:
 ```bash
-curl -O https://raw.githubusercontent.com/aeternity/installer/master/install.sh && chmod +x install.sh && ./install.sh 2.0.0
+bash <(curl -s https://install.aeternity.io/install.sh) 4.2.1
 ```
 
 See the documentation [here](https://github.com/aeternity/aeternity/blob/master/README.md) detailed instructions for manual installation.
