@@ -129,10 +129,10 @@ install_node() {
 
 if [[ "$OSTYPE" = "linux-gnu" && $(lsb_release -i -s) = "Ubuntu" ]]; then
     install_deps_ubuntu
-    install_node "https://releases.ops.aeternity.com/aeternity-${RELEASE_VERSION}-ubuntu-x86_64.tar.gz"
+    install_node "https://releases.aeternity.io/aeternity-${RELEASE_VERSION}-ubuntu-x86_64.tar.gz"
 elif [[ "$OSTYPE" = "darwin"* ]]; then
     install_deps_osx
-    install_node "https://releases.ops.aeternity.com/aeternity-${RELEASE_VERSION}-macos-x86_64.tar.gz"
+    install_node "https://releases.aeternity.io/aeternity-${RELEASE_VERSION}-macos-x86_64.tar.gz"
 else
     echo -e "Unsupported platform (OS)! Please refer to the documentation for supported platforms."
     exit 1
