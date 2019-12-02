@@ -97,7 +97,7 @@ install_deps_ubuntu() {
 install_deps_osx() {
     VER=$(sw_vers -productVersion)
 
-    if ! [[ "$VER" = "10.13"* || $VER = "10.14"* ]]; then
+    if ! [[ "$VER" = "10.13"* || $VER = "10.14"* || $VER = "10.15"* ]]; then
         echo -e "Unsupported OSX version! Please refer to the documentation for supported versions."
         exit 1
     fi
