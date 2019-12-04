@@ -26,6 +26,12 @@ commands:
           name: Bats Tests
           command: |
             make tests
+  change_file_size_limit:
+    description: "Change file size limit"
+    steps:
+      - run:
+          name: Set the recommended minimum
+          command: ulimit -n 24576
 
 jobs:
   test_ubuntu_1604:
@@ -44,6 +50,7 @@ jobs:
     executor: macos_1013
     steps:
       - checkout
+      - change_file_size_limit
       - run_tests
 
 workflows:
