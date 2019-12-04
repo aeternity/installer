@@ -26,12 +26,13 @@ commands:
           name: Bats Tests
           command: |
             make tests
-  change_file_size_limit:
-    description: "Change file size limit"
+  change_open_files_limit:
+    description: "Change open files limit"
     steps:
       - run:
           name: Set the recommended minimum
-          command: ulimit -n 24576
+          command: |
+            sudo launchctl limit maxfiles 24576 200000
 
 jobs:
   test_ubuntu_1604:
@@ -50,7 +51,7 @@ jobs:
     executor: macos_1013
     steps:
       - checkout
-      - change_file_size_limit
+      - change_open_files_limit
       - run_tests
 
 workflows:
