@@ -33,6 +33,7 @@ commands:
           name: Set the recommended minimum
           command: |
             sudo launchctl limit maxfiles 24576 200000
+            ulimit -n 24576
 
 jobs:
   test_ubuntu_1604:
