@@ -104,7 +104,14 @@ install_deps_osx() {
 
     echo -e "\nInstalling dependencies ...\n"
     brew update
-    brew install openssl libsodium
+
+    if [[ $(brew info openssl --json | jq ".[].installed|length > 0") = false ]]; then
+        brew install openssl
+    fi
+
+    if [[ $(brew info libsodium --json | jq ".[].installed|length > 0") = false ]]; then
+        brew install libsodium
+    fi
 }
 
 install_node() {
