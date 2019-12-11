@@ -19,14 +19,6 @@ commands:
           name: Setup test environment
           command: |
             sudo apt-get install lsb-release
-  setup_macos:
-    description: "Setup macos test environment"
-    steps:
-      - run:
-          name: Setup test environment
-          command: |
-            brew update
-            brew install jq
   run_tests:
     description: "Tests"
     steps:
@@ -52,7 +44,6 @@ jobs:
     executor: macos_1013
     steps:
       - checkout
-      - setup_macos
       - run_tests
 
 workflows:
