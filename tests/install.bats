@@ -25,13 +25,13 @@ load test_helper
     $NODE_DIR/bin/aeternity stop
 }
 
-# @test "install latest version" {
-#     run ./install.sh --no-prompt
-#     [[ ${output} =~ "Installation completed." ]]
-#     [[ $status -eq 0 ]]
+@test "install latest version" {
+    run ./install.sh --no-prompt
+    [[ ${output} =~ "Installation completed." ]]
+    [[ $status -eq 0 ]]
 
-#     [[ -f $NODE_DIR/bin/aeternity ]]
-#     $NODE_DIR/bin/aeternity start && sleep 10
-#     $NODE_DIR/bin/aeternity ping
-#     $NODE_DIR/bin/aeternity stop
-# }
+    [[ -f $NODE_DIR/bin/aeternity ]]
+    $NODE_DIR/bin/aeternity start && sleep 10
+    $NODE_DIR/bin/aeternity ping
+    $NODE_DIR/bin/aeternity stop
+}
