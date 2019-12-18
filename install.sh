@@ -8,7 +8,7 @@ RELEASE_VERSION="latest"
 TEMP_RELEASE_FILE=${TEMP_RELEASE_FILE:=/tmp/aeternity.tgz}
 TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
 SHOW_PROMPT=true
-UPDATE_NODE=false
+DELETE_TARGET_DIR=false
 
 usage () {
     echo -e "Usage:\n"
@@ -26,8 +26,8 @@ for arg in "$@"; do
             SHOW_PROMPT=false
             shift
         ;;
-        --update)
-            UPDATE_NODE=true
+        --delete)
+            DELETE_TARGET_DIR=true
             shift
         ;;
         --help)
@@ -60,7 +60,7 @@ in_array() {
 }
 
 install_prompt () {
-    if [ "$UPDATE_NODE" = false ]; then
+    if [ "$DELETE_TARGET_DIR" = true ]; then
         echo -e "\nATTENTION: This script will delete the directory ${TARGET_DIR} if it exists. You should back up any contents before continuing.\n"
     else
         echo -e "\nATTENTION: This script will update the directory ${TARGET_DIR} if it exists. You should back up any contents before continuing.\n"
@@ -132,7 +132,7 @@ install_node() {
             install_prompt
         fi
 
-        if [ "$UPDATE_NODE" = false ]; then
+        if [ "$DELETE_TARGET_DIR" = true ]; then
             rm -rf "${TARGET_DIR}"
         fi
 

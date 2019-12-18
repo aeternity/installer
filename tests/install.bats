@@ -35,7 +35,7 @@ load test_helper
     $NODE_DIR/bin/aeternity ping
     $NODE_DIR/bin/aeternity stop
 
-    run ./install.sh --no-prompt --update
+    run ./install.sh --no-prompt
     [[ ${output} =~ "Installation completed" ]]
     [[ $status -eq 0 ]]
 
