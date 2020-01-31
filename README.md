@@ -1,5 +1,3 @@
-[releases]: https://github.com/aeternity/aeternity/releases
-
 # Quick install
 
 Run below command to install latest version of aeternity node:
@@ -93,16 +91,16 @@ tar -xf libsodium-1.0.16.tar.gz && cd libsodium-1.0.16
 
 ### macOS package
 
-Easiest way to install dependencies is using [Homebrew](https://brew.sh/):
+Easiest way to install dependencies is using [Homebrew](brew):
 ```bash
 brew update
-brew install openssl libsodium
+brew install openssl libsodium gmp
 ```
 
 The macOS package has:
 
-* A hard dependency on OpenSSL v1.1 installed with [Homebrew](https://brew.sh/) in its default path `/usr/local/opt/openssl/lib/libcrypto.1.1.dylib`;
-* A hard dependency on libsodium v1.0.16 installed with [Homebrew](https://brew.sh/) in its default path `/usr/local/opt/libsodium/lib/libsodium.23.dylib`.
+* A hard dependency on OpenSSL v1.1 installed with [Homebrew](brew) in its default path `/usr/local/opt/openssl/lib/libcrypto.1.1.dylib`;
+* A hard dependency on libsodium v1.0.16 installed with [Homebrew](brew) in its default path `/usr/local/opt/libsodium/lib/libsodium.23.dylib`.
 
 In case you have installed either of them in a non-default path, you could use symlink(s) to work around the issue.
 You can create those symlinks by running the following commands:
@@ -132,3 +130,6 @@ Downloading the [Git repository](https://github.com/aeternity/installer) itself 
 ```bash
 make tests
 ```
+
+[releases]: https://github.com/aeternity/aeternity/releases
+[brew]: https://brew.sh/
