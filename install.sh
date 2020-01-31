@@ -113,6 +113,7 @@ install_deps_osx() {
 
     echo -e "\nInstalling dependencies ...\n"
     brew update
+    brew install gmp
 
     if [[ ! $(brew ls --versions openssl) || $RELEASE_VERSION = "latest" || ! $RELEASE_VERSION < "5.0.0" ]]; then
         brew install openssl@1.1
