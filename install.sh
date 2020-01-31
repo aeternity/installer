@@ -115,11 +115,15 @@ install_deps_osx() {
     brew update
 
     if [[ ! $(brew ls --versions openssl) || $RELEASE_VERSION = "latest" || ! $RELEASE_VERSION < "5.0.0" ]]; then
-        brew install openssl@1.1 gmp
+        brew install openssl@1.1
     fi
 
     if ! [[ $(brew ls --versions libsodium) ]]; then
         brew install libsodium
+    fi
+
+    if [[ $RELEASE_VERSION > "5.2.0" ]]; then
+        brew install gmp
     fi
 }
 
