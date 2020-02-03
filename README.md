@@ -5,7 +5,7 @@ Run below command to install latest version of aeternity node:
 bash <(curl -s https://install.aeternity.io/install.sh)
 ```
 
-The latest argument is interpreted as version.
+The last argument is interpreted as a version.
 The releases are published on [GitHub][releases].
 
 To install an older specific version use:
@@ -16,7 +16,7 @@ bash <(curl -s https://install.aeternity.io/install.sh) 4.2.1
 ##### Additional options
 
 - `--no-prompt` - Disable confirmation prompt
-- `--delete` - Deleting the directory where aeternity node will be installed
+- `--delete` - Clean the target directory before installation
 
 Example:
 
@@ -46,13 +46,11 @@ TARGET_DIR=/some/dir bash <(curl -s https://install.aeternity.io/install.sh)
 
 * [Libsodium](https://download.libsodium.org/doc/)
 * [Openssl](https://www.openssl.org)
-* gmp
+* [GMP](https://gmplib.org)
 
 See the documentation [here](https://github.com/aeternity/aeternity/blob/master/README.md) detailed instructions for manual installation.
 
 # Run install tests
-
-Downloading the [Git repository](https://github.com/aeternity/installer) itself and:
 
 ```bash
 make tests
