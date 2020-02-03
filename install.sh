@@ -121,6 +121,10 @@ install_deps_osx() {
     if ! [[ $(brew ls --versions libsodium) ]]; then
         brew install libsodium
     fi
+
+    if [[ $RELEASE_VERSION > "5.2.0" ]]; then
+        brew install gmp
+    fi
 }
 
 install_node() {
