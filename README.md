@@ -48,7 +48,7 @@ TARGET_DIR=/some/dir bash <(curl -s https://install.aeternity.io/install.sh)
 * [Openssl](https://www.openssl.org)
 * [GMP](https://gmplib.org)
 
-See the documentation [here](https://github.com/aeternity/aeternity/blob/master/README.md) detailed instructions for manual installation.
+For manual installation see the [detailed instructions](https://github.com/aeternity/aeternity/blob/master/README.md).
 
 # Run install tests
 
