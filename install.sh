@@ -7,14 +7,19 @@ set -o nounset
 RELEASE_VERSION="latest"
 TEMP_RELEASE_FILE=${TEMP_RELEASE_FILE:=/tmp/aeternity.tgz}
 TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
+SNAPSHOT_DIR=${SNAPSHOT_DIR:=$TARGET_DIR/../maindb}
+SNAPSHOT_URL="https://aeternity-database-backups.s3.eu-central-1.amazonaws.com"
+SNAPSHOT_FILE="mnesia_main_v-1_latest.tgz"
 SHOW_PROMPT=true
 DELETE_TARGET_DIR=false
+SNAPSHOT_RESTORE=false
 
 usage () {
     echo -e "Usage:\n"
     echo -e "  $0 [options] release_version\n"
     echo "Options:"
     echo -e "  --no-prompt Disable confirmation prompts.\n"
+    echo -e "  --snapshot-restore Restore the database from a snapshot.\n"
     echo "Release version format is X.Y.Z where X, Y, and Z are non-negative integers"
     echo "You can find a list of aeternity releases at https://github.com/aeternity/aeternity/releases"
     exit 1
@@ -28,6 +33,10 @@ for arg in "$@"; do
         ;;
         --delete)
             DELETE_TARGET_DIR=true
+            shift
+        ;;
+        --snapshot-restore)
+            SNAPSHOT_RESTORE=true
             shift
         ;;
         --help)
@@ -151,12 +160,49 @@ install_node() {
     fi
 }
 
+snapshot_restore() {
+    if [ $SHOW_PROMPT = true ]; then
+        echo -e "\nATTENTION: This script will restore the node database from a snapshot.\n"
+
+        read -p "Restore (y/n)?" inputprerunchoice
+        case "$inputprerunchoice" in
+            y|Y )
+                SNAPSHOT_RESTORE=true
+                ;;
+            n|N )
+                SNAPSHOT_RESTORE=false
+                ;;
+            * )
+                echo "Invalid input..."
+                snapshot_restore
+                ;;
+        esac
+    fi
+
+    if [ $SNAPSHOT_RESTORE = true ]; then
+        rm -rf $SNAPSHOT_DIR
+        mkdir -p $SNAPSHOT_DIR
+
+        if curl -Lf -o "${SNAPSHOT_DIR}/${SNAPSHOT_FILE}" "${SNAPSHOT_URL}/${SNAPSHOT_FILE}"; then
+            CHECKSUM=$(curl ${SNAPSHOT_URL}/${SNAPSHOT_FILE}.md5)
+
+            diff -qs <(echo $CHECKSUM) <(openssl md5 -r ${SNAPSHOT_DIR}/${SNAPSHOT_FILE} | awk '{ print $1; }')
+            test $? -eq 0 && tar -xzf ${SNAPSHOT_DIR}/${SNAPSHOT_FILE} -C ${SNAPSHOT_DIR}
+
+            echo -e "\nCleanup...\n"
+            rm "${SNAPSHOT_DIR}/${SNAPSHOT_FILE}"
+        fi
+    fi
+}
+
 if [[ "$OSTYPE" = "linux-gnu" && $(lsb_release -i -s) = "Ubuntu" ]]; then
     install_deps_ubuntu
     install_node "https://releases.aeternity.io/aeternity-${RELEASE_VERSION}-ubuntu-x86_64.tar.gz"
+    snapshot_restore
 elif [[ "$OSTYPE" = "darwin"* ]]; then
     install_deps_osx
     install_node "https://releases.aeternity.io/aeternity-${RELEASE_VERSION}-macos-x86_64.tar.gz"
+    snapshot_restore
 else
     echo -e "Unsupported platform (OS)! Please refer to the documentation for supported platforms."
     exit 1
