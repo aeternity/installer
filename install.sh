@@ -7,7 +7,7 @@ set -o nounset
 RELEASE_VERSION="latest"
 TEMP_RELEASE_FILE=${TEMP_RELEASE_FILE:=/tmp/aeternity.tgz}
 TARGET_DIR=${TARGET_DIR:=$HOME/aeternity/node}
-SNAPSHOT_DIR=${SNAPSHOT_DIR:=$TARGET_DIR/../maindb}
+SNAPSHOT_DIR=${SNAPSHOT_DIR:=$TARGET_DIR/data}
 SNAPSHOT_URL="https://aeternity-database-backups.s3.eu-central-1.amazonaws.com"
 SNAPSHOT_FILE="mnesia_main_v-1_latest.tgz"
 SHOW_PROMPT=true
@@ -162,7 +162,7 @@ install_node() {
 
 snapshot_restore() {
     if [ $SHOW_PROMPT = true ]; then
-        echo -e "\nATTENTION: This script will restore the node database from a snapshot.\n"
+        echo -e "\nATTENTION: This script will delete the directory ${SNAPSHOT_DIR}/mnesia if it exists and will restore the node database from a snapshot. You should back up any contents before continuing.\n"
 
         read -p "Restore (y/n)?" inputprerunchoice
         case "$inputprerunchoice" in
@@ -180,17 +180,17 @@ snapshot_restore() {
     fi
 
     if [ $SNAPSHOT_RESTORE = true ]; then
-        rm -rf $SNAPSHOT_DIR
-        mkdir -p $SNAPSHOT_DIR
+        rm -rf "$SNAPSHOT_DIR/mnesia"
 
         if curl -Lf -o "${SNAPSHOT_DIR}/${SNAPSHOT_FILE}" "${SNAPSHOT_URL}/${SNAPSHOT_FILE}"; then
             CHECKSUM=$(curl ${SNAPSHOT_URL}/${SNAPSHOT_FILE}.md5)
 
             diff -qs <(echo $CHECKSUM) <(openssl md5 -r ${SNAPSHOT_DIR}/${SNAPSHOT_FILE} | awk '{ print $1; }')
             test $? -eq 0 && tar -xzf ${SNAPSHOT_DIR}/${SNAPSHOT_FILE} -C ${SNAPSHOT_DIR}
+            mv ${SNAPSHOT_DIR}/db1/mnesia ${SNAPSHOT_DIR}
 
             echo -e "\nCleanup...\n"
-            rm "${SNAPSHOT_DIR}/${SNAPSHOT_FILE}"
+            rm -rf "${SNAPSHOT_DIR}/${SNAPSHOT_FILE}" "${SNAPSHOT_DIR}/db1"
         fi
     fi
 }

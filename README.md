@@ -28,7 +28,7 @@ bash <(curl -s https://install.aeternity.io/install.sh) --no-prompt [version]
 ##### Additional parameters
 
 - `TARGET_DIR` - To override the path where aeternity node will be installed (default: `$HOME/aeternity/node`)
-- `SNAPSHOT_DIR` - To override the path where the aeternity snapshot can be downloaded (default: `$TARGET_DIR/../maindb`)
+- `SNAPSHOT_DIR` - To override the path where the aeternity snapshot can be downloaded (default: `$TARGET_DIR/data`)
 
 Example:
 
