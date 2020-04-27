@@ -17,6 +17,7 @@ bash <(curl -s https://install.aeternity.io/install.sh) 4.2.1
 
 - `--no-prompt` - Disable confirmation prompt
 - `--delete` - Clean the target directory before installation
+- `--snapshot-restore` - Restore the database from a snapshot
 
 Example:
 
@@ -27,6 +28,7 @@ bash <(curl -s https://install.aeternity.io/install.sh) --no-prompt [version]
 ##### Additional parameters
 
 - `TARGET_DIR` - To override the path where aeternity node will be installed (default: `$HOME/aeternity/node`)
+- `SNAPSHOT_DIR` - To override the path where the aeternity snapshot can be downloaded (default: `$TARGET_DIR/data`)
 
 Example:
 
