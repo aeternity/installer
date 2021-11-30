@@ -1,15 +1,15 @@
 version: 2.1
 
 executors:
-  ubuntu_1604:
-    docker:
-      - image: circleci/buildpack-deps:xenial
   ubuntu_1804:
     docker:
       - image: circleci/buildpack-deps:bionic
-  macos_1013:
+  macos_1015:
     macos:
-      xcode: "10.0.0"
+      xcode: "12.4.0"
+  macos_1106:
+    macos:
+      xcode: "13.1.0"
 
 commands:
   setup_ubuntu:
@@ -28,11 +28,13 @@ commands:
             make tests
 
 jobs:
-  test_ubuntu_1604:
-    executor: ubuntu_1604
+  test:
+    parameters:
+      os:
+        type: executor
+    executor: << parameters.os >>
     steps:
       - checkout
-      - setup_ubuntu
       - run_tests
   test_ubuntu_1804:
     executor: ubuntu_1804
@@ -40,15 +42,12 @@ jobs:
       - checkout
       - setup_ubuntu
       - run_tests
-  test_macos_1013:
-    executor: macos_1013
-    steps:
-      - checkout
-      - run_tests
 
 workflows:
-  check:
+  all-tests:
     jobs:
-      - test_ubuntu_1604
       - test_ubuntu_1804
-      - test_macos_1013
+      - test:
+          matrix:
+            parameters:
+              os: [macos_1015, macos_1106]
