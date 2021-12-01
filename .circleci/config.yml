@@ -4,6 +4,9 @@ executors:
   ubuntu_1804:
     docker:
       - image: circleci/buildpack-deps:bionic
+  macos_1014:
+    macos:
+      xcode: "11.1.0"
   macos_1015:
     macos:
       xcode: "12.4.0"
@@ -50,4 +53,4 @@ workflows:
       - test:
           matrix:
             parameters:
-              os: [macos_1015, macos_1106]
+              os: [macos_1014, macos_1015, macos_1106]
