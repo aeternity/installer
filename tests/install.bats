@@ -31,7 +31,8 @@ load test_helper
     [[ $status -eq 0 ]]
 
     [[ -f $NODE_DIR/bin/aeternity ]]
-    $NODE_DIR/bin/aeternity start && sleep 10
+    $NODE_DIR/bin/aeternity start &
+    sleep 10
     $NODE_DIR/bin/aeternity ping
     $NODE_DIR/bin/aeternity stop
 }
@@ -51,7 +52,8 @@ load test_helper
     [[ $status -eq 0 ]]
 
     [[ -f $NODE_DIR/bin/aeternity ]]
-    $NODE_DIR/bin/aeternity start && sleep 10
+    $NODE_DIR/bin/aeternity start &
+    sleep 10
     $NODE_DIR/bin/aeternity ping
     $NODE_DIR/bin/aeternity stop
 }
