@@ -3,7 +3,7 @@ version: 2.1
 executors:
   ubuntu_1804:
     docker:
-      - image: circleci/buildpack-deps:bionic
+      - image: cimg/base:current-18.04
   macos_1015:
     macos:
       xcode: "12.4.0"
