@@ -15,7 +15,7 @@ load test_helper
 }
 
 @test "install specific version (openssl@1.1)" {
-    run ./install.sh --no-prompt 5.0.0
+    run ./install.sh --no-prompt 6.6.0
     [[ ${output} =~ "Installation completed" ]]
     [[ $status -eq 0 ]]
 
@@ -37,7 +37,7 @@ load test_helper
 }
 
 @test "install specific version and update to latest version" {
-    run ./install.sh --no-prompt 5.0.0
+    run ./install.sh --no-prompt 6.6.0
     [[ ${output} =~ "Installation completed" ]]
     [[ $status -eq 0 ]]
 
