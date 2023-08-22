@@ -4,9 +4,6 @@ executors:
   ubuntu_1804:
     docker:
       - image: cimg/base:current-18.04
-  macos_1106:
-    macos:
-      xcode: "13.4.1"
   macos_1206:
     macos:
       xcode: "14.2.0"
@@ -67,4 +64,4 @@ workflows:
       - test_macos:
           matrix:
             parameters:
-              os: [macos_1106, macos_1206, macos_1302]
+              os: [macos_1206, macos_1302]
