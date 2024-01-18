@@ -1,15 +1,21 @@
 version: 2.1
 
 executors:
-  ubuntu_1604:
-    docker:
-      - image: circleci/buildpack-deps:xenial
   ubuntu_1804:
     docker:
-      - image: circleci/buildpack-deps:bionic
-  macos_1013:
+      - image: cimg/base:current-18.04
+  macos_1206:
     macos:
-      xcode: "10.0.0"
+      xcode: "14.2.0"
+    resource_class: macos.x86.medium.gen2
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+  macos_1302:
+    macos:
+      xcode: "14.3.1"
+    resource_class: macos.x86.medium.gen2
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
 
 commands:
   setup_ubuntu:
@@ -19,6 +25,13 @@ commands:
           name: Setup test environment
           command: |
             sudo apt-get install lsb-release
+  setup_macos:
+    description: "Setup Ubuntu test environment"
+    steps:
+      - run:
+          name: Setup test environment
+          command: |
+            sudo launchctl limit maxfiles 24576
   run_tests:
     description: "Tests"
     steps:
@@ -28,27 +41,33 @@ commands:
             make tests
 
 jobs:
-  test_ubuntu_1604:
-    executor: ubuntu_1604
+  test_macos:
+    parameters:
+      os:
+        type: executor
+    executor: << parameters.os >>
+    steps:
+      - checkout
+      - setup_macos
+      - run_tests
+  test_ubuntu:
+    parameters:
+      os:
+        type: executor
+    executor: << parameters.os >>
     steps:
       - checkout
       - setup_ubuntu
-      - run_tests
-  test_ubuntu_1804:
-    executor: ubuntu_1804
-    steps:
-      - checkout
-      - setup_ubuntu
-      - run_tests
-  test_macos_1013:
-    executor: macos_1013
-    steps:
-      - checkout
       - run_tests
 
 workflows:
-  check:
+  all-tests:
     jobs:
-      - test_ubuntu_1604
-      - test_ubuntu_1804
-      - test_macos_1013
+      - test_ubuntu:
+          matrix:
+            parameters:
+              os: [ubuntu_1804]
+      - test_macos:
+          matrix:
+            parameters:
+              os: [macos_1206, macos_1302]
