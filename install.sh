@@ -115,7 +115,7 @@ install_deps_ubuntu() {
 install_deps_osx() {
     VER=$(sw_vers -productVersion)
 
-    if ! [[ "$VER" = "10.15"* || $VER = "11."* ]]; then
+    if ! [[ $VER = "11."* || $VER = "12."* || $VER = "13."* ]]; then
         echo -e "Unsupported OSX version! Please refer to the documentation for supported versions."
         exit 1
     fi
@@ -195,13 +195,19 @@ snapshot_restore() {
     fi
 }
 
+if [ "$RELEASE_VERSION" = "latest" ];
+    VERSION_STRING="latest"
+else
+    VERSION_STRING="v${RELEASE_VERSION}"
+fi
+
 if [[ "$OSTYPE" = "linux-gnu" && $(lsb_release -i -s) = "Ubuntu" ]]; then
     install_deps_ubuntu
-    install_node "https://releases.aeternity.io/aeternity-${RELEASE_VERSION}-ubuntu-x86_64.tar.gz"
+    install_node "https://releases.aeternity.io/aeternity-${VERSION_STRING}-ubuntu-x86_64.tar.gz"
     snapshot_restore
 elif [[ "$OSTYPE" = "darwin"* ]]; then
     install_deps_osx
-    install_node "https://releases.aeternity.io/aeternity-${RELEASE_VERSION}-macos-x86_64.tar.gz"
+    install_node "https://releases.aeternity.io/aeternity-${VERSION_STRING}-macos-x86_64.tar.gz"
     snapshot_restore
 else
     echo -e "Unsupported platform (OS)! Please refer to the documentation for supported platforms."
